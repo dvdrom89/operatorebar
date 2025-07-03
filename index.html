@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestione Bar - Barista</title>
+  <link rel="manifest" href="manifest-barista.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>👨‍🍳 Gestione Bar - Barista</h1>
+
+    <label for="operatore">Nome Barista:</label>
+    <input type="text" id="operatore" placeholder="Mario" />
+
+    <h2>📷 Scanner QR Code</h2>
+    <div id="reader" style="width:300px; margin: auto;"></div>
+
+    <h3>📋 Oppure seleziona cliente:</h3>
+    <select id="userSelect" style="width:100%; max-width:300px;"></select>
+
+    <h3>🍹 Seleziona prodotto:</h3>
+    <select id="productSelect" style="width:100%; max-width:300px;"></select>
+    <button onclick="charge()">Addebita</button>
+
+    <h3>💶 Accredita importo:</h3>
+    <input type="number" id="importo" placeholder="es. 5.00" step="0.01" style="width:100%; max-width:300px;" />
+    <button onclick="credit()">Accredita</button>
+
+    <div id="result" style="margin-top:20px; color:#FFD700;"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
