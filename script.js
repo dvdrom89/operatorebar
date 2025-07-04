@@ -40,22 +40,33 @@ async function loadProducts() {
 function showFeedbackMessage(text) {
   const message = document.getElementById("feedbackMessage");
   message.textContent = text;
+  message.classList.add("fade");
   message.style.display = "block";
   navigator.vibrate?.(200); // Vibrazione se disponibile
   new Audio("beep.mp3").play().catch(() => {}); // Suono
-  setTimeout(() => { message.style.display = "none"; }, 2500);
+
+  setTimeout(() => {
+    message.style.display = "none";
+    message.classList.remove("fade");
+  }, 2500);
 }
+
 
 function showSpinnerAndMessage(text) {
   const result = document.getElementById("resultMessage");
   result.innerHTML = `<div class="spinner"></div><div>${text}</div>`;
-  result.style.display = "block";
+  result.style.display = "flex";
+  result.style.flexDirection = "column";
+  result.style.alignItems = "center";
 }
 
 function showFinalMessage(text) {
   const result = document.getElementById("resultMessage");
-  result.innerHTML = text;
+  result.innerHTML = `<div>${text}</div>`;
   result.style.display = "block";
+  setTimeout(() => {
+    result.style.display = "none";
+  }, 3000);
 }
 
 function charge() {
