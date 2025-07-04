@@ -1,4 +1,3 @@
-
 const BASE_URL = "https://script.google.com/macros/s/AKfycbxE7N8UPQouBXlD1rxAjpXcWZXml0F4bkshTiyT3UEJilohVhsqOU4BT75wcgGdmGt1nA/exec";
 let selectedUserId = "";
 
@@ -63,9 +62,11 @@ function showSpinnerAndMessage(text) {
 function showFinalMessage(text) {
   const result = document.getElementById("resultMessage");
   result.innerHTML = `<div>${text}</div>`;
+  result.classList.add("fade");
   result.style.display = "block";
   setTimeout(() => {
     result.style.display = "none";
+    result.classList.remove("fade");
   }, 3000);
 }
 
