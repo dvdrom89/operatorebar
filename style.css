@@ -62,7 +62,7 @@ button:hover {
   background-color: #a00000;
 }
 
-/* Feedback al centro (es: Utente scansionato) */
+/* Messaggio centrale */
 #feedbackMessage {
   position: fixed;
   top: 50%;
@@ -76,6 +76,10 @@ button:hover {
   box-shadow: 0 0 20px #800000;
   display: none;
   z-index: 9999;
+}
+
+/* Attiva animazione solo se ha classe .fade */
+#feedbackMessage.fade {
   animation: fadeInOut 2.5s ease-in-out;
 }
 
@@ -103,7 +107,7 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Messaggio di conferma finale */
+/* Messaggio finale */
 #resultMessage {
   margin-top: 20px;
   text-align: center;
@@ -114,4 +118,5 @@ button:hover {
   border-radius: 8px;
   display: none;
 }
+
 
