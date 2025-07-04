@@ -18,10 +18,9 @@ async function loadUsers() {
 
     select.onchange = () => {
       selectedUserId = select.value;
-      document.getElementById("result").textContent = "";
     };
   } catch (err) {
-    document.getElementById("result").textContent = "Errore caricamento utenti: " + err.message;
+    showFinalMessage("Errore caricamento utenti: " + err.message);
     console.error("Errore caricamento utenti:", err);
   }
 }
@@ -81,7 +80,7 @@ function charge() {
   })
   .then(r => r.text())
   .then(txt => {
-    showFinalMessage("Prodotto addebitato ✅");
+    showFinalMessage(txt || "Prodotto addebitato ✅");
   });
 }
 
@@ -98,7 +97,7 @@ function credit() {
   })
   .then(r => r.text())
   .then(txt => {
-    showFinalMessage("Importo accreditato 💶");
+    showFinalMessage(txt || "Importo accreditato 💶");
   });
 }
 
@@ -112,7 +111,6 @@ Html5Qrcode.getCameras().then(devices => {
       { fps: 10, qrbox: 250 },
       qrCodeMessage => {
         selectedUserId = qrCodeMessage;
-        document.getElementById("result").textContent = `Utente selezionato: ${qrCodeMessage}`;
         document.getElementById("userSelect").value = qrCodeMessage;
         showFeedbackMessage("Utente scansionato ✅");
       }
@@ -123,4 +121,16 @@ Html5Qrcode.getCameras().then(devices => {
 window.onload = () => {
   loadUsers();
   loadProducts();
+
+  // Recupera nome barista da localStorage
+  const operatoreInput = document.getElementById("operatore");
+  const savedName = localStorage.getItem("baristaNome");
+  if (savedName) {
+    operatoreInput.value = savedName;
+  }
+
+  // Salva il nome ogni volta che cambia
+  operatoreInput.addEventListener("input", () => {
+    localStorage.setItem("baristaNome", operatoreInput.value.trim());
+  });
 };
