@@ -81,7 +81,6 @@ function charge() {
   })
   .then(r => r.text())
   .then(txt => {
-    document.getElementById("result").textContent = txt;
     showFinalMessage("Prodotto addebitato ✅");
   });
 }
@@ -99,7 +98,6 @@ function credit() {
   })
   .then(r => r.text())
   .then(txt => {
-    document.getElementById("result").textContent = txt;
     showFinalMessage("Importo accreditato 💶");
   });
 }
