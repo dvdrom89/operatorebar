@@ -12,7 +12,7 @@ async function loadUsers() {
     users.forEach(user => {
       const opt = document.createElement("option");
       opt.value = user.id;
-      opt.textContent = `${user.nome} ${user.cognome} (${user.id}) - €${parseFloat(user.credito).toFixed(2)}`;
+      opt.textContent = `${user.nome} ${user.id} - €${parseFloat(user.credito).toFixed(2)}`;
       select.appendChild(opt);
     });
 
