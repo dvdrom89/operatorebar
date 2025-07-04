@@ -30,6 +30,7 @@ async function loadProducts() {
   const res = await fetch(`${BASE_URL}?action=getProducts`);
   const products = await res.json();
   const select = document.getElementById("productSelect");
+  select.innerHTML = "<option value=''>-- Seleziona un prodotto --</option>";
   products.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p.nome;
@@ -38,52 +39,73 @@ async function loadProducts() {
   });
 }
 
+// Messaggio "Utente scansionato ✅" centrato
 function showFeedbackMessage(text) {
   const message = document.getElementById("feedbackMessage");
   message.textContent = text;
   message.classList.add("fade");
   message.style.display = "block";
-  navigator.vibrate?.(200);
-  new Audio("beep.mp3").play().catch(() => {});
+  navigator.vibrate?.(200); // vibrazione se disponibile
+  new Audio("beep.mp3").play().catch(() => {}); // suono opzionale
+
   setTimeout(() => {
     message.style.display = "none";
     message.classList.remove("fade");
   }, 2500);
 }
 
-function showSpinnerAndMessage(text) {
+// Overlay con spinner e messaggio (es. Addebito in corso)
+function showLoadingMessage(text) {
   const result = document.getElementById("resultMessage");
-  result.innerHTML = `<div class="spinner"></div><div>${text}</div>`;
+  result.innerHTML = `
+    <div class="spinner"></div>
+    <div>${text}</div>
+  `;
   result.style.display = "flex";
-  result.style.flexDirection = "column";
-  result.style.alignItems = "center";
 }
 
+// Nasconde l'overlay
+function hideLoadingMessage() {
+  const result = document.getElementById("resultMessage");
+  result.style.display = "none";
+}
+
+// Mostra messaggio finale temporaneo
 function showFinalMessage(text) {
   const result = document.getElementById("resultMessage");
   result.innerHTML = `<div>${text}</div>`;
-  result.style.display = "block";
+  result.style.display = "flex";
   setTimeout(() => {
     result.style.display = "none";
   }, 3000);
 }
 
+// Funzione Addebita
 function charge() {
   const operatore = document.getElementById("operatore").value.trim();
   if (!selectedUserId || !operatore) return alert("Compila tutti i campi");
 
   const prodotto = document.getElementById("productSelect").value;
-  showSpinnerAndMessage("Addebito in corso...");
+  if (!prodotto) return alert("Seleziona un prodotto");
+
+  showLoadingMessage("Addebito in corso...");
+
   fetch(`${BASE_URL}?action=charge&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&prodotto=${encodeURIComponent(prodotto)}`, {
     method: "POST"
   })
   .then(r => r.text())
   .then(txt => {
+    hideLoadingMessage();
+    showFinalMessage(txt);
     document.getElementById("result").textContent = txt;
-    showFinalMessage("Prodotto addebitato ✅");
+  })
+  .catch(err => {
+    hideLoadingMessage();
+    alert("Errore durante l'addebito: " + err.message);
   });
 }
 
+// Funzione Accredita
 function credit() {
   const operatore = document.getElementById("operatore").value.trim();
   if (!selectedUserId || !operatore) return alert("Compila tutti i campi");
@@ -91,18 +113,24 @@ function credit() {
   const importo = parseFloat(document.getElementById("importo").value);
   if (isNaN(importo) || importo <= 0) return alert("Inserisci un importo valido");
 
-  showSpinnerAndMessage("Accredito in corso...");
+  showLoadingMessage("Accredito in corso...");
+
   fetch(`${BASE_URL}?action=credit&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&importo=${importo}`, {
     method: "POST"
   })
   .then(r => r.text())
   .then(txt => {
+    hideLoadingMessage();
+    showFinalMessage(txt);
     document.getElementById("result").textContent = txt;
-    showFinalMessage("Importo accreditato 💶");
+  })
+  .catch(err => {
+    hideLoadingMessage();
+    alert("Errore durante l'accredito: " + err.message);
   });
 }
 
-// QR Code scan
+// Inizializzazione QR Scanner
 const html5QrCode = new Html5Qrcode("reader");
 Html5Qrcode.getCameras().then(devices => {
   const backCam = devices.find(cam => cam.label.toLowerCase().includes("back")) || devices[0];
@@ -120,6 +148,7 @@ Html5Qrcode.getCameras().then(devices => {
   }
 });
 
+// Caricamento iniziale
 window.onload = () => {
   loadUsers();
   loadProducts();
