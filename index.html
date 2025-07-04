@@ -19,24 +19,22 @@
     <div id="reader" style="width:300px; margin: auto;"></div>
 
     <h3>📋 Oppure seleziona cliente:</h3>
-    <select id="userSelect" style="width:100%; max-width:300px;"></select>
+    <select id="userSelect"></select>
 
     <h3>🍹 Seleziona prodotto:</h3>
-    <select id="productSelect" style="width:100%; max-width:300px;"></select>
+    <select id="productSelect"></select>
     <button onclick="charge()">Addebita</button>
 
     <h3>💶 Accredita importo:</h3>
-    <input type="number" id="importo" placeholder="es. 5.00" step="0.01" style="width:100%; max-width:300px;" />
+    <input type="number" id="importo" placeholder="es. 5.00" step="0.01" />
     <button onclick="credit()">Accredita</button>
 
-    <div id="result" style="margin-top:20px; color:#FFD700;"></div>
-
-    <!-- MESSAGGIO IN FONDO -->
-    <div id="resultMessage"></div>
+    <div id="result"></div>
   </div>
 
   <!-- MESSAGGIO CENTRALE -->
   <div id="feedbackMessage">Utente scansionato ✅</div>
+  <div id="resultMessage"></div>
 
   <script src="script.js"></script>
 </body>
