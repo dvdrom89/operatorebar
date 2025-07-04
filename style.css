@@ -107,14 +107,23 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Messaggio finale */
+/* Messaggio finale al centro */
 #resultMessage {
-  margin-top: 20px;
-  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-size: 1.3rem;
   color: #FFD700;
   background-color: #222;
-  padding: 10px;
+  padding: 20px 30px;
   border-radius: 8px;
+  box-shadow: 0 0 20px #800000;
   display: none;
+  z-index: 9998;
+  text-align: center;
+}
+
+#resultMessage.fade {
+  animation: fadeInOut 3s ease-in-out;
 }
