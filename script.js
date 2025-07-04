@@ -37,6 +37,26 @@ async function loadProducts() {
     select.appendChild(opt);
   });
 }
+function showFeedbackMessage(text) {
+  const message = document.getElementById("feedbackMessage");
+  message.textContent = text;
+  message.style.display = "block";
+  navigator.vibrate?.(200); // Vibrazione se disponibile
+  new Audio("beep.mp3").play().catch(() => {}); // Suono
+  setTimeout(() => { message.style.display = "none"; }, 2500);
+}
+
+function showSpinnerAndMessage(text) {
+  const result = document.getElementById("resultMessage");
+  result.innerHTML = `<div class="spinner"></div><div>${text}</div>`;
+  result.style.display = "block";
+}
+
+function showFinalMessage(text) {
+  const result = document.getElementById("resultMessage");
+  result.innerHTML = text;
+  result.style.display = "block";
+}
 
 function charge() {
   const operatore = document.getElementById("operatore").value.trim();
