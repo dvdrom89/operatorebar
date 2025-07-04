@@ -37,20 +37,19 @@ async function loadProducts() {
     select.appendChild(opt);
   });
 }
+
 function showFeedbackMessage(text) {
   const message = document.getElementById("feedbackMessage");
   message.textContent = text;
   message.classList.add("fade");
   message.style.display = "block";
-  navigator.vibrate?.(200); // Vibrazione se disponibile
-  new Audio("beep.mp3").play().catch(() => {}); // Suono
-
+  navigator.vibrate?.(200);
+  new Audio("beep.mp3").play().catch(() => {});
   setTimeout(() => {
     message.style.display = "none";
     message.classList.remove("fade");
   }, 2500);
 }
-
 
 function showSpinnerAndMessage(text) {
   const result = document.getElementById("resultMessage");
@@ -74,11 +73,15 @@ function charge() {
   if (!selectedUserId || !operatore) return alert("Compila tutti i campi");
 
   const prodotto = document.getElementById("productSelect").value;
+  showSpinnerAndMessage("Addebito in corso...");
   fetch(`${BASE_URL}?action=charge&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&prodotto=${encodeURIComponent(prodotto)}`, {
     method: "POST"
   })
   .then(r => r.text())
-  .then(txt => document.getElementById("result").textContent = txt);
+  .then(txt => {
+    document.getElementById("result").textContent = txt;
+    showFinalMessage("Prodotto addebitato ✅");
+  });
 }
 
 function credit() {
@@ -88,11 +91,15 @@ function credit() {
   const importo = parseFloat(document.getElementById("importo").value);
   if (isNaN(importo) || importo <= 0) return alert("Inserisci un importo valido");
 
+  showSpinnerAndMessage("Accredito in corso...");
   fetch(`${BASE_URL}?action=credit&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&importo=${importo}`, {
     method: "POST"
   })
   .then(r => r.text())
-  .then(txt => document.getElementById("result").textContent = txt);
+  .then(txt => {
+    document.getElementById("result").textContent = txt;
+    showFinalMessage("Importo accreditato 💶");
+  });
 }
 
 // QR Code scan
@@ -107,6 +114,7 @@ Html5Qrcode.getCameras().then(devices => {
         selectedUserId = qrCodeMessage;
         document.getElementById("result").textContent = `Utente selezionato: ${qrCodeMessage}`;
         document.getElementById("userSelect").value = qrCodeMessage;
+        showFeedbackMessage("Utente scansionato ✅");
       }
     );
   }
