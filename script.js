@@ -78,10 +78,10 @@ function charge() {
   fetch(`${BASE_URL}?action=charge&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&prodotto=${encodeURIComponent(prodotto)}`, {
     method: "POST"
   })
-  .then(r => r.text())
-  .then(txt => {
-    showFinalMessage(txt || "Prodotto addebitato ✅");
-  });
+  .then(r => r.json())
+.then(data => {
+  showFinalMessage(data.message || "Prodotto addebitato ✅");
+});
 }
 
 function credit() {
@@ -95,10 +95,10 @@ function credit() {
   fetch(`${BASE_URL}?action=credit&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&importo=${importo}`, {
     method: "POST"
   })
-  .then(r => r.text())
-  .then(txt => {
-    showFinalMessage(txt || "Importo accreditato 💶");
-  });
+  .then(r => r.json())
+.then(data => {
+  showFinalMessage(data.message || "Importo accreditato 💶");
+});
 }
 
 // QR Code scan
