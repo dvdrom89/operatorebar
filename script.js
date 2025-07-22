@@ -3,7 +3,7 @@ let selectedUserId = "";
 
 async function loadUsers() {
   try {
-    const res = await fetch(`${BASE_URL}?action=getUserList`);
+    const res = await fetch(${BASE_URL}?action=getUserList);
     const users = await res.json();
     if (!Array.isArray(users)) throw new Error("Risposta non valida");
 
@@ -12,27 +12,28 @@ async function loadUsers() {
     users.forEach(user => {
       const opt = document.createElement("option");
       opt.value = user.id;
-      opt.textContent = `${user.nome} ${user.cognome} - €${parseFloat(user.credito).toFixed(2)}`;
+      opt.textContent = ${user.nome} ${user.cognome} - €${parseFloat(user.credito).toFixed(2)};
       select.appendChild(opt);
     });
 
     select.onchange = () => {
       selectedUserId = select.value;
+      document.getElementById("result").textContent = "";
     };
   } catch (err) {
-    showFinalMessage("Errore caricamento utenti: " + err.message);
+    document.getElementById("result").textContent = "Errore caricamento utenti: " + err.message;
     console.error("Errore caricamento utenti:", err);
   }
 }
 
 async function loadProducts() {
-  const res = await fetch(`${BASE_URL}?action=getProducts`);
+  const res = await fetch(${BASE_URL}?action=getProducts);
   const products = await res.json();
   const select = document.getElementById("productSelect");
   products.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p.nome;
-    opt.textContent = `${p.nome} (€${p.prezzo})`;
+    opt.textContent = ${p.nome} (€${p.prezzo});
     select.appendChild(opt);
   });
 }
@@ -52,7 +53,7 @@ function showFeedbackMessage(text) {
 
 function showSpinnerAndMessage(text) {
   const result = document.getElementById("resultMessage");
-  result.innerHTML = `<div class="spinner"></div><div>${text}</div>`;
+  result.innerHTML = <div class="spinner"></div><div>${text}</div>;
   result.style.display = "flex";
   result.style.flexDirection = "column";
   result.style.alignItems = "center";
@@ -60,12 +61,10 @@ function showSpinnerAndMessage(text) {
 
 function showFinalMessage(text) {
   const result = document.getElementById("resultMessage");
-  result.innerHTML = `<div>${text}</div>`;
-  result.classList.add("fade");
+  result.innerHTML = <div>${text}</div>;
   result.style.display = "block";
   setTimeout(() => {
     result.style.display = "none";
-    result.classList.remove("fade");
   }, 3000);
 }
 
@@ -75,13 +74,14 @@ function charge() {
 
   const prodotto = document.getElementById("productSelect").value;
   showSpinnerAndMessage("Addebito in corso...");
-  fetch(`${BASE_URL}?action=charge&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&prodotto=${encodeURIComponent(prodotto)}`, {
+  fetch(${BASE_URL}?action=charge&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&prodotto=${encodeURIComponent(prodotto)}, {
     method: "POST"
   })
-  .then(r => r.json())
-.then(data => {
-  showFinalMessage(data.message || "Prodotto addebitato ✅");
-});
+  .then(r => r.text())
+  .then(txt => {
+    document.getElementById("result").textContent = txt;
+    showFinalMessage("Prodotto addebitato ✅");
+  });
 }
 
 function credit() {
@@ -92,13 +92,14 @@ function credit() {
   if (isNaN(importo) || importo <= 0) return alert("Inserisci un importo valido");
 
   showSpinnerAndMessage("Accredito in corso...");
-  fetch(`${BASE_URL}?action=credit&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&importo=${importo}`, {
+  fetch(${BASE_URL}?action=credit&id=${selectedUserId}&operatore=${encodeURIComponent(operatore)}&importo=${importo}, {
     method: "POST"
   })
-  .then(r => r.json())
-.then(data => {
-  showFinalMessage(data.message || "Importo accreditato 💶");
-});
+  .then(r => r.text())
+  .then(txt => {
+    document.getElementById("result").textContent = txt;
+    showFinalMessage("Importo accreditato 💶");
+  });
 }
 
 // QR Code scan
@@ -111,6 +112,7 @@ Html5Qrcode.getCameras().then(devices => {
       { fps: 10, qrbox: 250 },
       qrCodeMessage => {
         selectedUserId = qrCodeMessage;
+        document.getElementById("result").textContent = Utente selezionato: ${qrCodeMessage};
         document.getElementById("userSelect").value = qrCodeMessage;
         showFeedbackMessage("Utente scansionato ✅");
       }
@@ -121,16 +123,4 @@ Html5Qrcode.getCameras().then(devices => {
 window.onload = () => {
   loadUsers();
   loadProducts();
-
-  // Recupera nome barista da localStorage
-  const operatoreInput = document.getElementById("operatore");
-  const savedName = localStorage.getItem("baristaNome");
-  if (savedName) {
-    operatoreInput.value = savedName;
-  }
-
-  // Salva il nome ogni volta che cambia
-  operatoreInput.addEventListener("input", () => {
-    localStorage.setItem("baristaNome", operatoreInput.value.trim());
-  });
 };
